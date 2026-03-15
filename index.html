@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Local</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="css/prueba.css" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Plan Local","description":"Parques, estadios, canchas, restaurantes, centros recreacionales y discotecas de Sincelejo, Sucre"}</script>
+</head>
+<body>
+    <!-- Loader inicial -->
+    <div class="page-loader" id="page-loader" aria-hidden="true">
+        <div class="page-loader-inner">
+            <div class="page-loader-logo">Plan Local</div>
+            <div class="page-loader-bar"><div class="page-loader-progress"></div></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="nav-blur"></div>
+        <div class="logo">Plan Local</div>
+        <button id="theme-btn" style="background:none; border:none; cursor:pointer; font-size: 1.5rem;"></button>
+    </header>
+
+    <!-- HERO: carrusel de tarjetas por categoría, una imagen por tipo -->
+    <section class="hero-cards-wrap">
+        <div class="hero-cards" id="hero-cards">
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Parques <br>Sincelejo.</span>
+            </div>
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Estadios <br>y Canchas.</span>
+            </div>
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Restaurantes <br>y Sabor.</span>
+            </div>
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1534438327276-d14e8f0e2f0c?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Centros <br>Recreacionales.</span>
+            </div>
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1571266028249-d220e6b2c035?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Discotecas <br>y Noche.</span>
+            </div>
+            <div class="hero-card" style="background-image: url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=800&auto=format&fit=crop');">
+                <span class="hero-card-caption">Plazas <br>y Vida Pública.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN BUSCADOR: centrada en la línea entre carrusel (verde) y contenido (crema) -->
+    <section class="search-section" aria-label="Buscar">
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input type="text" id="search" placeholder="Busca en Sincelejo: parques, estadios, canchas, restaurantes...">
+                <button type="button" class="search-btn" id="search-btn">Explorar</button>
+            </div>
+            <div id="search-results" class="search-results" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- Secciones que se ocultan al buscar: info + destacados -->
+    <div id="content-above-search-results">
+    <!-- SECCIÓN INFO (cuadritos) -->
+    <section class="info-grid container scroll-reveal scroll-reveal-stagger">
+        <div class="info-box reveal">
+            <div class="info-box-inner">
+                <h3> Espacios al Aire Libre</h3>
+                <p>Disfruta de parques, canchas y zonas verdes ideales para el deporte, la recreación y el descanso.</p>
+            </div>
+        </div>
+        <div class="info-box reveal">
+            <div class="info-box-inner">
+                <h3> Gastronomía y Vida Nocturna</h3>
+                <p>Explora restaurantes, bares y discotecas para compartir, celebrar y vivir la noche local.</p>
+            </div>
+        </div>
+        <div class="info-box reveal">
+            <div class="info-box-inner">
+                <h3>Recreación y Bienestar</h3>
+                <p>Accede a centros recreacionales y actividades que promueven la salud física, mental y social.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DESTACADOS (carrusel 3D) -->
+    <section class="destacados-section scroll-reveal">
+        <div class="destacados-header">
+            <h2>Destacados</h2>
+        </div>
+        <div class="destacados-3d-carousel-section">
+            <p id="destacados-3d-loading" class="destacados-3d-loading">Cargando destacados…</p>
+            <div class="destacados-3d-container" id="destacados-3d-carousel"></div>
+        </div>
+        <div class="destacados-3d-nav">
+            <button type="button" class="destacados-3d-nav-btn" id="destacados-3d-prev" aria-label="Anterior">&#10229;</button>
+            <button type="button" class="destacados-3d-nav-btn" id="destacados-3d-next" aria-label="Siguiente">&#10230;</button>
+        </div>
+    </section>
+    </div>
+
+    <!-- Mapa (Leaflet + OpenStreetMap, marcadores por categoría) -->
+    <section class="mapa-section container scroll-reveal" id="mapa-section">
+        <h2 class="mapa-titulo">Dónde estamos</h2>
+        <div class="mapa-layout">
+            <div class="mapa-col mapa-col-map">
+                <div class="mapa-wrap">
+                    <div id="map" aria-label="Mapa de sitios en Sincelejo"></div>
+                </div>
+            </div>
+            <div class="mapa-col mapa-col-text">
+                <div class="mapa-text-card">
+                    <h3>Centro de control</h3>
+                    <p>Filtra lo que ves en el mapa por categoría, nombre y popularidad.</p>
+                    <div class="map-control-search">
+                        <input type="text" id="map-control-search" placeholder="Buscar sitio en el mapa...">
+                    </div>
+                    <div class="map-control-list" id="map-control-categorias"></div>
+                    <div class="map-control-actions">
+                        <button type="button" class="map-control-btn" id="map-control-reset">Ver todo</button>
+                        <button type="button" class="map-control-btn toggle" id="map-control-top">Solo más visitados</button>
+                    </div>
+                    <div class="map-control-legend">
+                        <span class="map-legend-item"><span class="map-legend-icon"><i class="fa-solid fa-tree" aria-hidden="true"></i></span>Parques / Aire libre</span>
+                        <span class="map-legend-item"><span class="map-legend-icon"><i class="fa-solid fa-futbol" aria-hidden="true"></i></span>Estadios / Canchas</span>
+                        <span class="map-legend-item"><span class="map-legend-icon"><i class="fa-solid fa-utensils" aria-hidden="true"></i></span>Gastronomía</span>
+                        <span class="map-legend-item"><span class="map-legend-icon"><i class="fa-solid fa-person-running" aria-hidden="true"></i></span>Recreación</span>
+                        <span class="map-legend-item"><span class="map-legend-icon"><i class="fa-solid fa-moon" aria-hidden="true"></i></span>Vida nocturna</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOQUE PRINCIPAL: Sincelejo — Qué hacer y dónde ir (tarjetas con imagen, categoría, enlace) -->
+    <main class="container scroll-reveal">
+        <div class="main-heading">
+            <h2 style="font-family:'Syne'; font-size: 3rem; margin-bottom: 40px;">Sincelejo, Sucre — Qué hacer y dónde ir</h2>
+            <p style="margin-bottom: 8px; font-size: 1.1rem; color: var(--leaf);">Información de parques, estadios, canchas, restaurantes, centros recreacionales y discotecas.</p>
+            <p class="main-heading-counter" id="main-heading-counter" aria-live="polite"></p>
+        </div>
+        <div class="filtros-wrap" id="filtros-wrap"></div>
+        <div class="view-toggle-wrap" id="view-toggle-wrap">
+            <button type="button" class="view-toggle-btn active" id="view-grid" aria-pressed="true" aria-label="Vista cuadrícula">▦</button>
+            <button type="button" class="view-toggle-btn" id="view-list" aria-pressed="false" aria-label="Vista lista">≡</button>
+        </div>
+        <div class="quehacer-grid" id="blog-grid">
+            <!-- Tarjetas con datos de ejemplo (para capturas del diseño) -->
+            <p id="blog-grid-loading" class="quehacer-loading">Cargando sitios…</p>
+        </div>
+    </main>
+
+    <button type="button" class="btn-subir" id="btn-subir" aria-label="Volver arriba">↑</button>
+
+    <footer class="scroll-reveal">
+        <p>Plan Local &copy; 2026 — Parques, estadios, canchas, restaurantes, centros recreacionales y discotecas de Sincelejo, Sucre</p>
+        <p>Diseñado & Desarrollado por <a href="https://www.instagram.com/frankbaldovino03/" target="_blank" rel="noopener noreferrer">Franklin Manuel Baldovino Vergara</a></p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="js/data-ejemplo.js"></script>
+    <script src="js/prueba.js"></script>
+</body>
+</html>

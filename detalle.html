@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitio · Plan Local</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="css/prueba.css" rel="stylesheet">
+    <link href="css/detalle.css" rel="stylesheet">
+</head>
+<body>
+
+    <header class="detalle-header">
+        <a href="index.html" class="detalle-back">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver
+        </a>
+        <div class="logo">Plan Local</div>
+    </header>
+
+    <div id="detalle-error" class="detalle-error" style="display: none;"></div>
+
+    <div id="detalle-contenido">
+        <section class="detalle-hero" id="detalle-hero">
+            <div class="detalle-hero-img" id="detalle-hero-img"></div>
+            <div class="detalle-hero-content">
+                <span class="detalle-categoria" id="detalle-categoria">—</span>
+                <h1 id="detalle-nombre">—</h1>
+            </div>
+        </section>
+
+        <div class="detalle-quick-bar">
+            <div class="detalle-quick-item">
+                <span>Ubicación</span>
+                <p id="detalle-dir">—</p>
+            </div>
+            <div class="detalle-quick-item">
+                <span>Valor entrada</span>
+                <p id="detalle-precio">—</p>
+            </div>
+            <div class="detalle-quick-item">
+                <span>Horario</span>
+                <p id="detalle-horario">—</p>
+            </div>
+        </div>
+
+        <main class="detalle-main">
+            <section class="detalle-story">
+                <h2>La experiencia</h2>
+                <div class="detalle-descripcion" id="detalle-descripcion">—</div>
+                <div class="detalle-gallery" id="detalle-gallery"></div>
+
+                <section class="detalle-video-section" id="detalle-video-section" style="display: none;">
+                    <h2>Video</h2>
+                    <div class="detalle-video-wrapper" id="detalle-video"></div>
+                </section>
+            </section>
+
+            <aside class="detalle-sidebar">
+                <div class="detalle-spec-group">
+                    <span class="detalle-spec-label">Punto de referencia</span>
+                    <div class="detalle-spec-value" id="detalle-ref">—</div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <footer>
+        <p>Plan Local &copy; 2026 — Parques, estadios, canchas, restaurantes, centros recreacionales y discotecas de Sincelejo, Sucre</p>
+        <p>Diseñado & Desarrollado por <a href="https://www.instagram.com/frankbaldovino03/" target="_blank" rel="noopener noreferrer">Franklin Manuel Baldovino Vergara</a></p>
+    </footer>
+
+    <script src="js/data-ejemplo.js"></script>
+    <script src="js/detalle.js"></script>
+</body>
+</html>
