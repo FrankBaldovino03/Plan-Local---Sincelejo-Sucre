@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from flask import Flask, send_from_directory, redirect, url_for
+from flask import Flask, send_from_directory, redirect, url_for, jsonify
 from flask_cors import CORS
 from config import (
     SQLALCHEMY_DATABASE_URI,
@@ -74,10 +74,12 @@ def create_app():
         def index():
             return redirect(url_for("admin.index"))
 
+    @app.get("/health")
+    def health():
+        return jsonify({"status": "ok"}), 200
+
     with app.app_context():
-        _ensure_database()
-        db.create_all()
-        migrate_categorias_estadios_canchas()
+        _initialize_database(app)
 
     return app
 
@@ -92,6 +94,17 @@ def _ensure_database():
         conn.close()
     except Exception:
         pass  # Si falla (ej. ya existe o sin permisos), create_all puede seguir
+
+
+def _initialize_database(app):
+    """Inicializa BD al arrancar, sin tumbar el servicio si falla en hosting."""
+    try:
+        _ensure_database()
+        db.create_all()
+        migrate_categorias_estadios_canchas()
+    except Exception as exc:
+        # En Render conviene mantener el proceso vivo para ver logs y endpoint /health.
+        app.logger.exception("No se pudo inicializar la base de datos al arrancar: %s", exc)
 
 
 app = create_app()
