@@ -1,0 +1,138 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if sitio else 'Nuevo' }} sitio{% endblock %}
+{% block content %}
+<div class="admin-card">
+    <h1>{{ 'Editar' if sitio else 'Nuevo' }} sitio</h1>
+    <p class="subtitle">{{ 'Modifica los datos del lugar.' if sitio else 'Añade un nuevo lugar a Plan Local.' }}</p>
+    <form method="post" enctype="multipart/form-data" action="{% if sitio %}{{ url_for('admin.editar', sitio_id=sitio.id) }}{% else %}{{ url_for('admin.nuevo') }}{% endif %}">
+        <div class="form-row">
+            <div>
+                <label>Nombre *</label>
+                <input type="text" name="nombre" value="{{ sitio.nombre if sitio else '' }}" required placeholder="Ej. Parque Santander">
+            </div>
+            <div>
+                <label>Categoría *</label>
+                <select name="categoria" required>
+                    <option value="">Selecciona una categoría</option>
+                    {% set categorias = ['Parques', 'Estadios y Canchas', 'Restaurantes', 'Centros Recreacionales', 'Discotecas', 'Plazas y Vida Pública'] %}
+                    {% set cat_sel = categoria_display(sitio.categoria) if sitio and sitio.categoria else '' %}
+                    {% if sitio and sitio.categoria and cat_sel not in categorias %}
+                    <option value="{{ sitio.categoria }}" selected>{{ cat_sel }}</option>
+                    {% endif %}
+                    {% for cat in categorias %}
+                    <option value="{{ cat }}" {% if sitio and cat_sel == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label>Dirección</label>
+                <input type="text" name="direccion" value="{{ sitio.direccion if sitio else '' }}" placeholder="Ej. Calle 20 #15-30">
+            </div>
+            <div>
+                <label>Valor de entrada</label>
+                <input type="text" name="valor_entrada" value="{{ sitio.valor_entrada if sitio else '' }}" placeholder="Gratis, Entrada libre o $5.000">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label>Horario</label>
+                <input type="text" name="horario" value="{{ sitio.horario if sitio else '' }}" placeholder="Ej. Lun–Dom 6:00–22:00">
+            </div>
+            <div>
+                <label>Punto de referencia</label>
+                <input type="text" name="punto_referencia" value="{{ sitio.punto_referencia if sitio else '' }}" placeholder="Cerca de...">
+            </div>
+        </div>
+
+        <label>Descripción corta (para la card)</label>
+        <textarea name="descripcion_corta" placeholder="Breve texto que se muestra en la tarjeta del listado.">{{ sitio.descripcion_corta if sitio else '' }}</textarea>
+
+        <label>Descripción larga (página detalle)</label>
+        <textarea name="descripcion" placeholder="Texto completo para la sección «La experiencia».">{{ sitio.descripcion if sitio else '' }}</textarea>
+
+        <div class="form-row">
+            <div>
+                <label>Latitud</label>
+                <input type="text" name="lat" value="{{ sitio.lat if sitio else '' }}" placeholder="9.3047">
+            </div>
+            <div>
+                <label>Longitud</label>
+                <input type="text" name="lng" value="{{ sitio.lng if sitio else '' }}" placeholder="-75.3978">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label>Destacado (aparece en el carrusel)</label>
+                <select name="destacado">
+                    <option value="0" {{ (sitio and not sitio.destacado) and 'selected' or '' }}>No</option>
+                    <option value="1" {{ (sitio and sitio.destacado) and 'selected' or '' }}>Sí</option>
+                </select>
+            </div>
+            <div>
+                <label>Orden (mayor = primero en listados)</label>
+                <input type="number" name="orden" value="{{ sitio.orden if sitio else 0 }}">
+            </div>
+        </div>
+
+        <hr class="form-divider">
+        <h2 class="form-section-title">Imágenes y video (4 imágenes + 1 video)</h2>
+
+        <div class="file-field">
+            <label>Imagen portada</label>
+            <div class="file-input-wrap">
+                <input type="file" name="imagen_portada" accept=".jpg,.jpeg,.png,.gif,.webp">
+            </div>
+            {% if sitio and sitio.imagen_portada %}<p class="file-hint">Actual: {{ sitio.imagen_portada }}</p>{% endif %}
+        </div>
+
+        <div class="file-grid">
+            <div class="file-field">
+                <label>Galería 1</label>
+                <div class="file-input-wrap">
+                    <input type="file" name="imagen_1" accept=".jpg,.jpeg,.png,.gif,.webp">
+                </div>
+                {% if sitio and sitio.imagen_1 %}<p class="file-hint">Actual: {{ sitio.imagen_1 }}</p>{% endif %}
+            </div>
+            <div class="file-field">
+                <label>Galería 2</label>
+                <div class="file-input-wrap">
+                    <input type="file" name="imagen_2" accept=".jpg,.jpeg,.png,.gif,.webp">
+                </div>
+                {% if sitio and sitio.imagen_2 %}<p class="file-hint">Actual: {{ sitio.imagen_2 }}</p>{% endif %}
+            </div>
+            <div class="file-field">
+                <label>Galería 3</label>
+                <div class="file-input-wrap">
+                    <input type="file" name="imagen_3" accept=".jpg,.jpeg,.png,.gif,.webp">
+                </div>
+                {% if sitio and sitio.imagen_3 %}<p class="file-hint">Actual: {{ sitio.imagen_3 }}</p>{% endif %}
+            </div>
+            <div class="file-field">
+                <label>Galería 4</label>
+                <div class="file-input-wrap">
+                    <input type="file" name="imagen_4" accept=".jpg,.jpeg,.png,.gif,.webp">
+                </div>
+                {% if sitio and sitio.imagen_4 %}<p class="file-hint">Actual: {{ sitio.imagen_4 }}</p>{% endif %}
+            </div>
+        </div>
+
+        <div class="file-field" style="margin-top: 20px;">
+            <label>Video</label>
+            <div class="file-input-wrap">
+                <input type="file" name="video" accept=".mp4,.webm,.ogg">
+            </div>
+            {% if sitio and sitio.video_url %}<p class="file-hint">Actual: {{ sitio.video_url }}</p>{% endif %}
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-secondary" formaction="{{ url_for('admin.index') }}" formmethod="post">Cancelar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+.env
+.env.*
+env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+
+# Runtime uploads are generated content.
+uploads/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

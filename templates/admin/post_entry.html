@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abriendo admin…</title>
+</head>
+<body>
+    <form method="post" action="{{ url_for('admin.index') }}" id="admin-post-entry"></form>
+    <script>document.getElementById('admin-post-entry').submit();</script>
+    <noscript><p><button type="submit" form="admin-post-entry">Entrar al panel</button></p></noscript>
+</body>
+</html>

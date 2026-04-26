@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Sitios{% endblock %}
+{% block content %}
+<div class="admin-card">
+    <h1>Sitios</h1>
+    <p class="subtitle">Gestiona los lugares que se muestran en Plan Local — Sincelejo.</p>
+    <div class="admin-toolbar">
+        <form method="post" action="{{ url_for('admin.nuevo') }}" class="admin-toolbar-form">
+            <input type="hidden" name="_formulario" value="1">
+            <button type="submit" class="btn btn-primary">+ Nuevo sitio</button>
+        </form>
+    </div>
+    {% if sitios %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Destacado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sitios %}
+            <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.nombre }}</td>
+                <td>{{ categoria_display(s.categoria) }}</td>
+                <td>{{ 'Sí' if s.destacado else 'No' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <form method="post" action="{{ url_for('admin.editar', sitio_id=s.id) }}" style="display:inline;">
+                            <input type="hidden" name="_formulario" value="1">
+                            <button type="submit" class="btn btn-secondary btn-sm">Editar</button>
+                        </form>
+                        <form method="post" action="{{ url_for('admin.eliminar', sitio_id=s.id) }}" style="display:inline;" onsubmit="return confirm('¿Eliminar este sitio?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>Aún no hay sitios cargados.</p>
+        <form method="post" action="{{ url_for('admin.nuevo') }}" style="display:inline;">
+            <input type="hidden" name="_formulario" value="1">
+            <button type="submit" class="btn btn-primary">Crear el primero</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="api-info">
+        Endpoints API (GET/POST): <code>/api/sitios</code>, <code>/api/sitios/&lt;id&gt;</code>, <code>/api/destacados</code>
+    </div>
+</div>
+{% endblock %}
