@@ -12,6 +12,7 @@ __pycache__/
 
 # Runtime uploads are generated content.
 uploads/
+*.db
 
 # OS/editor noise
 .DS_Store
