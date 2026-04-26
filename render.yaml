@@ -9,15 +9,7 @@ services:
     envVars:
       - key: SECRET_KEY
         generateValue: true
-      - key: DB_HOST
-        sync: false
-      - key: DB_PORT
-        value: "3306"
-      - key: DB_USER
-        sync: false
-      - key: DB_PASSWORD
-        sync: false
-      - key: DB_NAME
+      - key: SUPABASE_DB_URL
         sync: false
       - key: FRONTEND_PATH
         value: templates/pag_principal

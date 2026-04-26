@@ -11,7 +11,7 @@ Todo vive en el mismo repo para simplificar despliegue y mantenimiento.
 ## Requisitos
 
 - Python 3.13+
-- MySQL disponible (local o remoto)
+- Proyecto de Supabase (PostgreSQL)
 
 ## Instalación local (Windows)
 
@@ -32,14 +32,21 @@ Rutas locales:
 Puedes crear un `.env` con:
 
 ```env
-DB_USER=root
-DB_PASSWORD=
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_NAME=plan_local_sincelejo
+# Recomendado: pegar la cadena completa de Supabase (Session pooler)
+SUPABASE_DB_URL=postgresql+psycopg2://postgres.xxxxx:[PASSWORD]@aws-0-xx-xx.pooler.supabase.com:5432/postgres
+
+# Alternativa compatible (Render suele usar DATABASE_URL)
+# DATABASE_URL=postgresql+psycopg2://...
+
 SECRET_KEY=tu-clave-segura
 FRONTEND_PATH=templates/pag_principal
 ```
+
+### Estructura de base de datos
+
+- Script de estructura: `db/supabase_schema.sql`
+- Puedes pegarlo directamente en SQL Editor de Supabase.
+- Luego importa tus datos (INSERTs) sobre la tabla `public.sitios`.
 
 ## Deploy en Render (mismo repo)
 
@@ -52,10 +59,10 @@ Pasos:
 
 1. Sube este repo a GitHub.
 2. En Render, crea un servicio desde el repo.
-3. Define variables `DB_*` y `SECRET_KEY`.
+3. Define `SUPABASE_DB_URL` y `SECRET_KEY`.
 4. Deploy.
 
-## Nota sobre base de datos local
+## Nota sobre Supabase
 
-Si la API corre en Render, **no es recomendable** apuntarla a MySQL local de tu PC.  
-Para producción, usa una base MySQL en nube. Si mantienes local, tendrás que exponer puertos/túnel y mantener tu máquina siempre encendida.
+- Si usas la cadena `postgresql://...`, cámbiala a `postgresql+psycopg2://...`.
+- En Supabase desactiva RLS para esta tabla si solo se accede desde servidor Flask.

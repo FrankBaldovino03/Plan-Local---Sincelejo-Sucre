@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from flask import Flask, send_from_directory, redirect, url_for, jsonify
@@ -83,23 +82,9 @@ def create_app():
 
     return app
 
-
-def _ensure_database():
-    """Crea la base de datos MySQL si no existe (Laragon/root sin contraseña)."""
-    import pymysql
-    from config import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
-    try:
-        conn = pymysql.connect(host=DB_HOST, port=int(DB_PORT), user=DB_USER, password=DB_PASSWORD or None)
-        conn.cursor().execute(f"CREATE DATABASE IF NOT EXISTS `{DB_NAME}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
-        conn.close()
-    except Exception:
-        pass  # Si falla (ej. ya existe o sin permisos), create_all puede seguir
-
-
 def _initialize_database(app):
-    """Inicializa BD al arrancar, sin tumbar el servicio si falla en hosting."""
+    """Inicializa esquema al arrancar, sin tumbar el servicio si falla en hosting."""
     try:
-        _ensure_database()
         db.create_all()
         migrate_categorias_estadios_canchas()
     except Exception as exc:

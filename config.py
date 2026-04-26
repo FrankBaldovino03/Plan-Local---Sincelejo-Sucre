@@ -1,5 +1,5 @@
 # Configuración API Plan Local - Sincelejo
-# Base de datos: MySQL (Laragon/phpMyAdmin) - usuario root, sin contraseña
+# Base de datos principal: Supabase (PostgreSQL)
 
 import os
 from pathlib import Path
@@ -20,21 +20,27 @@ if not _raw:
 else:
     FRONTEND_PATH = _raw if Path(_raw).is_absolute() else str(BASE_DIR / _raw)
 
-# MySQL: root sin contraseña (Laragon)
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "plan_local_sincelejo")
+# Supabase recomienda usar la connection string completa.
+# También se soporta DATABASE_URL para compatibilidad con Render.
+SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL", "").strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
+DB_USER = os.getenv("DB_USER", "").strip()
+DB_PASSWORD = os.getenv("DB_PASSWORD", "").strip()
+DB_HOST = os.getenv("DB_HOST", "").strip()
+DB_PORT = os.getenv("DB_PORT", "5432").strip()
+DB_NAME = os.getenv("DB_NAME", "").strip()
 
-_database_url = os.getenv("DATABASE_URL", "").strip()
-if _database_url:
-    # Compatibilidad con URLs tipo mysql:// en algunos proveedores.
-    SQLALCHEMY_DATABASE_URI = _database_url.replace("mysql://", "mysql+pymysql://", 1)
-else:
+if SUPABASE_DB_URL:
+    SQLALCHEMY_DATABASE_URI = SUPABASE_DB_URL
+elif DATABASE_URL:
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
+elif all([DB_USER, DB_PASSWORD, DB_HOST, DB_NAME]):
     SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
+else:
+    # Fallback local para no romper en desarrollo sin variables cargadas.
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + str(BASE_DIR / "plan_local.db")
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Tamaño máximo para subida (4 imágenes + 1 video en una sola petición). 1 GB.
